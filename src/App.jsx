@@ -35,17 +35,20 @@ import mm7 from './assets/aplikasi pemilihan tempat minimarket/proyek7.png';
 import mm8 from './assets/aplikasi pemilihan tempat minimarket/proyek8.png';
 import mm9 from './assets/aplikasi pemilihan tempat minimarket/proyek9.png';
 
-// Import Karakter Anime (Genshin Impact) 1 sampai 4
+// Import Karakter Anime (Genshin Impact) 1 sampai 6
 import gi1 from './assets/Genshin-Impact-1.png';
 import gi2 from './assets/Genshin-Impact-2.png';
 import gi3 from './assets/Genshin-Impact-3.png';
 import gi4 from './assets/Genshin-Impact-4.png';
+import gi5 from './assets/Genshin-Impact-5.png';
+import gi6 from './assets/Genshin-Impact-6.png';
 
 function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [activeTab, setActiveTab] = useState('all');
   const [scrollCharacterIndex, setScrollCharacterIndex] = useState(0);
+  const [clickedSkillIndex, setClickedSkillIndex] = useState(null);
 
   const heroSectionRef = useRef(null);
   const projectSectionRef = useRef(null);
@@ -57,6 +60,11 @@ function App() {
   });
 
   const videoOpacity = useTransform(heroScrollProgress, [0, 0.8], [0.3, 0]);
+  
+  // Efek transisi gambar gi6
+  const gi6Opacity = useTransform(heroScrollProgress, [0, 0.75, 1], [0.5, 0.5, 0]);
+  const gi6Y = useTransform(heroScrollProgress, [0, 0.75, 1], [0, 0, -180]);
+  const gi6Blur = useTransform(heroScrollProgress, [0, 0.75, 1], ["0px", "5px", "45px"]);
 
   const { scrollYProgress } = useScroll({
     target: projectSectionRef,
@@ -65,7 +73,7 @@ function App() {
 
   const imageParallaxY = useTransform(scrollYProgress, [0, 1], [-40, 40]);
 
-  const animeCharacters = [gi1, gi2, gi3, gi4];
+  const animeCharacters = [gi1, gi2, gi4, gi3, gi5, gi6];
 
   const characterThemeBackgrounds = [
     "bg-gradient-to-b from-sky-950 via-slate-950 to-blue-950",      
@@ -166,7 +174,7 @@ function App() {
           <AnimatePresence mode="wait">
             <motion.img 
               key={scrollCharacterIndex}
-              src={animeCharacters[scrollCharacterIndex]} 
+              src={animeCharacters[scrollCharacterIndex % animeCharacters.length]} 
               alt="Genshin Impact Companion" 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
@@ -222,20 +230,23 @@ function App() {
         </motion.div>
 
         <div className="max-w-4xl z-10 flex flex-col items-start relative w-full">
-          <div className="absolute -top-24 -left-20 w-[420px] h-[420px] md:w-[500px] md:h-[500px] pointer-events-none z-0 opacity-40 mix-blend-screen filter blur-[0.5px]">
-            <AnimatePresence mode="wait">
-              <motion.img 
-                key={scrollCharacterIndex}
-                src={animeCharacters[scrollCharacterIndex]} 
-                alt="Genshin Background Overlay" 
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 0.5, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.05 }}
-                transition={{ duration: 0.6 }}
-                className="w-full h-full object-contain"
-              />
-            </AnimatePresence>
-          </div>
+          <motion.div 
+            style={{ 
+              opacity: gi6Opacity, 
+              y: gi6Y,
+              filter: useTransform(gi6Blur, (b) => `blur(${b})`)
+            }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 0.5, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="absolute -top-40 -left-16 w-[620px] h-[620px] md:w-[740px] md:h-[740px] pointer-events-none z-0 mix-blend-screen translate-x-24"
+          >
+            <img 
+              src={gi6} 
+              alt="Genshin Background Overlay GI6" 
+              className="w-full h-full object-contain"
+            />
+          </motion.div>
 
           <div className="relative z-10 flex flex-col items-start w-full">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 border border-white/10 text-sky-300 font-mono text-xs mb-6 backdrop-blur-md">
@@ -290,33 +301,50 @@ function App() {
       </section>
 
       <div id="experience" className="w-full px-6 md:px-16 pt-24 pb-24 grid md:grid-cols-2 gap-12 relative z-20">
+        
+        {/* Kolom Kiri (Professional Experience) */}
         <div className="relative pt-16 overflow-visible">
           <div className="absolute top-0 left-0 right-0 flex justify-center pointer-events-none z-30">
             <div className="relative w-36 h-36 flex justify-center items-center">
               <div className="absolute w-36 h-36 bg-sky-400/30 rounded-full blur-3xl animate-pulse"></div>
               <AnimatePresence mode="wait">
                 <motion.img 
-                  key={scrollCharacterIndex}
-                  src={animeCharacters[scrollCharacterIndex]} 
-                  alt="Genshin Character Experience Peek" 
+                  key={`left-char-${scrollCharacterIndex}`}
+                  src={animeCharacters[(scrollCharacterIndex + 2) % animeCharacters.length]} 
+                  alt="Genshin Character Experience Left" 
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, y: [0, -6, 0], scale: 1 }}
+                  animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ 
-                    duration: 0.4, 
-                    y: { repeat: Infinity, duration: 3.5, ease: "easeInOut" }
-                  }}
+                  transition={{ duration: 0.4, y: { repeat: Infinity, duration: 3.5, ease: "easeInOut" } }}
                   className="w-36 h-36 object-contain filter drop-shadow-[0_0_20px_rgba(56,189,248,0.5)] relative z-10"
                 />
               </AnimatePresence>
             </div>
           </div>
 
-          <section className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md relative z-10 flex flex-col shadow-2xl overflow-hidden h-full">
-            <h2 className="text-xs font-mono tracking-[0.25em] uppercase text-sky-300 mb-6">Professional_Experience</h2>
+          <motion.section 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -40 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md relative z-10 flex flex-col shadow-2xl overflow-hidden h-full"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xs font-mono tracking-[0.25em] uppercase text-sky-300">Professional_Experience</h2>
+            </div>
             <div className="space-y-6">
-              {experiences.map((exp) => (
-                <motion.div key={exp.id} whileHover={{ x: 4 }} className="border border-white/10 bg-black/40 p-6 rounded-2xl hover:border-white/30 transition-all backdrop-blur-sm">
+              {experiences.map((exp, idx) => (
+                <motion.div 
+                  key={exp.id} 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  viewport={{ once: false, amount: 0.3 }}
+                  transition={{ duration: 0.5, delay: idx * 0.15 }}
+                  whileHover={{ x: 4 }} 
+                  className="border border-white/10 bg-black/40 p-6 rounded-2xl hover:border-white/30 transition-all backdrop-blur-sm"
+                >
                   <div className="flex justify-between items-center mb-2">
                     <span className="bg-white/10 text-sky-200 px-2.5 py-0.5 rounded text-xs font-mono border border-white/10">{exp.year}</span>
                     <span className="text-xs font-mono text-zinc-300">[{exp.element}]</span>
@@ -324,74 +352,139 @@ function App() {
                   <h3 className="text-lg font-bold text-white mb-1">{exp.role}</h3>
                   <p className="text-sky-300/90 font-mono text-xs mb-3">@{exp.company}</p>
                   <ul className="list-disc list-inside space-y-2 text-sm text-zinc-200 leading-relaxed">
-                    {exp.desc.map((item, idx) => (
-                      <li key={idx}>{item}</li>
+                    {exp.desc.map((item, i) => (
+                      <li key={i}>{item}</li>
                     ))}
                   </ul>
                 </motion.div>
               ))}
             </div>
-          </section>
+          </motion.section>
         </div>
 
+        {/* Kolom Kanan (Technical Capabilities dengan Animasi Klik pada additional_skills) */}
         <div className="relative pt-16 overflow-visible">
           <div className="absolute top-0 left-0 right-0 flex justify-center pointer-events-none z-30">
             <div className="relative w-36 h-36 flex justify-center items-center">
               <div className="absolute w-36 h-36 bg-purple-400/30 rounded-full blur-3xl animate-pulse"></div>
               <AnimatePresence mode="wait">
                 <motion.img 
-                  key={(scrollCharacterIndex + 1) % animeCharacters.length}
-                  src={animeCharacters[(scrollCharacterIndex + 1) % animeCharacters.length]} 
-                  alt="Genshin Character Skills Peek" 
+                  key={`right-char-${scrollCharacterIndex}`}
+                  src={animeCharacters[(scrollCharacterIndex + 3) % animeCharacters.length]} 
+                  alt="Genshin Character Skills Right" 
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, y: [0, -6, 0], scale: 1 }}
+                  animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ 
-                    duration: 0.4, 
-                    y: { repeat: Infinity, duration: 3.5, ease: "easeInOut" }
-                  }}
+                  transition={{ duration: 0.4, y: { repeat: Infinity, duration: 3.5, ease: "easeInOut" } }}
                   className="w-36 h-36 object-contain filter drop-shadow-[0_0_20px_rgba(168,85,247,0.5)] relative z-10"
                 />
               </AnimatePresence>
             </div>
           </div>
 
-          <section className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md relative z-10 flex flex-col shadow-2xl h-full">
+          <motion.section 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -40 }}
+            viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md relative z-10 flex flex-col shadow-2xl h-full"
+          >
             <h2 className="text-xs font-mono tracking-[0.25em] uppercase text-sky-300 mb-6">Technical_Capabilities</h2>
             <div className="space-y-6">
-              <div className="bg-black/40 border border-white/10 p-6 rounded-2xl backdrop-blur-sm">
+              
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="bg-black/40 border border-white/10 p-6 rounded-2xl backdrop-blur-sm"
+              >
                 <h3 className="text-sky-300 font-mono text-xs mb-3 tracking-wider">{"// programming_languages"}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {programmingSkills.map((skill) => (
-                    <span key={skill} className="px-3 py-1 bg-white/10 border border-white/10 text-zinc-100 rounded-lg text-xs font-mono">
+                  {programmingSkills.map((skill, i) => (
+                    <motion.span 
+                      key={skill} 
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: false, amount: 0.3 }}
+                      transition={{ duration: 0.3, delay: 0.05 * i }}
+                      whileHover={{ scale: 1.05 }}
+                      className="px-3 py-1 bg-white/10 border border-white/10 text-zinc-100 rounded-lg text-xs font-mono cursor-pointer"
+                    >
                       {skill}
-                    </span>
+                    </motion.span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="bg-black/40 border border-white/10 p-6 rounded-2xl backdrop-blur-sm">
-                <h3 className="text-sky-300 font-mono text-xs mb-3 tracking-wider">{"// additional_skills"}</h3>
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="bg-black/40 border border-white/10 p-6 rounded-2xl backdrop-blur-sm"
+              >
+                <h3 className="text-sky-300 font-mono text-xs mb-3 tracking-wider">{"// additional_skills (click item for animation)"}</h3>
                 <div className="space-y-3">
                   {hardwareSkills.map((skill, index) => (
-                    <div key={index} className="flex justify-between items-center py-1.5 border-b border-white/10 last:border-none">
-                      <span className="font-mono text-xs text-zinc-200">{`0${index + 1}. ${skill.name}`}</span>
-                      <span className="text-[10px] bg-white/10 text-sky-200 px-2 py-0.5 rounded font-mono font-bold border border-white/10">{skill.level}</span>
-                    </div>
+                    <motion.div 
+                      key={index} 
+                      onClick={() => setClickedSkillIndex(index)}
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      viewport={{ once: false, amount: 0.3 }}
+                      transition={{ duration: 0.3, delay: 0.08 * index }}
+                      whileTap={{ scale: 0.96, x: 6 }}
+                      animate={clickedSkillIndex === index ? { 
+                        backgroundColor: ["rgba(255,255,255,0.05)", "rgba(56,189,248,0.25)", "rgba(255,255,255,0.05)"],
+                        borderColor: ["rgba(255,255,255,0.1)", "rgba(56,189,248,0.6)", "rgba(255,255,255,0.1)"]
+                      } : {}}
+                      className="flex justify-between items-center py-2 px-3 rounded-xl border border-white/10 cursor-pointer transition-colors select-none group"
+                    >
+                      <span className="font-mono text-xs text-zinc-200 group-hover:text-sky-300 transition-colors">{`0${index + 1}. ${skill.name}`}</span>
+                      <motion.span 
+                        animate={clickedSkillIndex === index ? { scale: [1, 1.2, 1] } : {}}
+                        transition={{ duration: 0.3 }}
+                        className="text-[10px] bg-white/10 text-sky-200 px-2.5 py-0.5 rounded font-mono font-bold border border-white/10"
+                      >
+                        {skill.level}
+                      </motion.span>
+                    </motion.div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
+
             </div>
-          </section>
+          </motion.section>
         </div>
       </div>
 
       <section id="education" className="w-full px-6 md:px-16 pb-24 relative z-20 scroll-mt-28">
-        <div className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md shadow-2xl">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -40 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md shadow-2xl"
+        >
           <h2 className="text-xs font-mono tracking-[0.25em] uppercase text-sky-300 mb-6">Educational_Background</h2>
           <div className="grid md:grid-cols-1 gap-6">
-            {educationList.map((edu) => (
-              <motion.div key={edu.id} whileHover={{ x: 4 }} className="border border-white/10 bg-black/40 p-6 rounded-2xl hover:border-white/30 transition-all backdrop-blur-sm">
+            {educationList.map((edu, idx) => (
+              <motion.div 
+                key={edu.id} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                viewport={{ once: false, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: idx * 0.15 }}
+                whileHover={{ x: 4 }} 
+                className="border border-white/10 bg-black/40 p-6 rounded-2xl hover:border-white/30 transition-all backdrop-blur-sm"
+              >
                 <div className="flex justify-between items-center mb-2">
                   <span className="bg-white/10 text-sky-200 px-2.5 py-0.5 rounded text-xs font-mono border border-white/10">{edu.year}</span>
                   <span className="text-xs font-mono text-sky-300 font-bold">Formal Education</span>
@@ -402,7 +495,7 @@ function App() {
               </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       <section id="projects" ref={projectSectionRef} className="w-full px-6 md:px-16 py-12 relative z-20 overflow-hidden scroll-mt-28">
@@ -419,6 +512,11 @@ function App() {
           {filteredProjects.map((proj, idx) => (
             <motion.div 
               key={idx} 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              viewport={{ once: false, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
               whileHover={{ y: -6, scale: 1.01 }} 
               className="border border-white/15 hover:border-white transition-all bg-black/40 rounded-3xl cursor-pointer overflow-visible flex flex-col justify-between backdrop-blur-md group shadow-xl relative" 
               onClick={() => { setSelectedProject(proj); setCurrentIdx(0); }}
@@ -465,6 +563,7 @@ function App() {
         </div>
       </footer>
 
+      {/* Modal Gallery */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-md" onClick={() => setSelectedProject(null)}>
