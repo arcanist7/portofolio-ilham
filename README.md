@@ -1,21 +1,35 @@
-<<<<<<< HEAD
-# React + Vite
+# 🚀 Portofolio Pribadi — Ilham Ngudi Slameto
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Website portofolio pribadi interaktif yang dibangun dengan **React.js**, **Vite**, dan **Tailwind CSS**. Didesain dengan tema futuristik dan sentuhan animasi elemen untuk menampilkan berbagai proyek *Software Engineering*, pengalaman profesional, serta kapabilitas teknis saya.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🛠️ Tech Stack & Tools
 
-## React Compiler
+Portofolio ini dikembangkan menggunakan teknologi modern:
+* **Frontend:** React.js, Vite, Tailwind CSS, Framer Motion
+* **Bahasa Pemrograman Utama:** PHP, JavaScript, Python, HTML, Kotlin
+* **Framework / Backend:** CodeIgniter 3, Node.js
+* **Database & Tools:** MySQL, Postman
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 📂 Featured Projects
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# portofolio-ilham
-Website portofolio pribadi yang dibangun dengan React.js untuk menampilkan proyek-proyek Software Engineering saya.
->>>>>>> 5d7c7861c7b05b456b4da0cae7248b4d3dc38efc
+Beberapa proyek unggulan yang pernah dikembangkan:
+1. **Portal Media Berita** — Sistem manajemen konten berbasis CodeIgniter 3 dan MySQL.
+2. **Aplikasi Administrasi TK** — Sistem informasi manajemen sekolah untuk efisiensi data siswa.
+3. **Sistem Pemesanan Percetakan** — Otomasi alur transaksi percetakan secara *real-time*.
+4. **Aplikasi Seleksi Atlet** — Sistem pemantauan dan pendataan statistik performa atlet.
+5. **Sistem Pendukung Keputusan Pemilihan Minimarket** — Analisis lokasi strategis menggunakan algoritma pemrograman web.
+
+---
+
+## 📞 Hubungi Saya
+
+* **Email:** [ilhamngudi1@gmail.com](mailto:ilhamngudi1@gmail.com)
+* **LinkedIn:** [linkedin.com/in/ilhamngudislameto](https://www.linkedin.com/in/ilhamngudislameto)
+* **GitHub:** [github.com/arcanist7](https://github.com/arcanist7)
+
+---
+© 2026 Ilham Ngudi Slameto. All rights reserved.
