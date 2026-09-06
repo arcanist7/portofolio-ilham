@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import profilFoto from './assets/profil.jpeg';
 
-// Import Video Background (Contoh: letakkan file video di folder assets)
+// Import Video Background
 import bgVideo from './assets/background-video.mp4';
 
 // Import Gambar Asli Proyek
@@ -47,14 +47,23 @@ function App() {
   const [activeTab, setActiveTab] = useState('all');
   const [scrollCharacterIndex, setScrollCharacterIndex] = useState(0);
 
+  const heroSectionRef = useRef(null);
   const projectSectionRef = useRef(null);
+  const videoRef = useRef(null);
+
+  const { scrollYProgress: heroScrollProgress } = useScroll({
+    target: heroSectionRef,
+    offset: ["start start", "end start"]
+  });
+
+  const videoOpacity = useTransform(heroScrollProgress, [0, 0.8], [0.3, 0]);
+
   const { scrollYProgress } = useScroll({
     target: projectSectionRef,
     offset: ["start end", "end start"]
   });
 
   const imageParallaxY = useTransform(scrollYProgress, [0, 1], [-40, 40]);
-  const badgeTranslateX = useTransform(scrollYProgress, [0, 1], [-30, 30]);
 
   const animeCharacters = [gi1, gi2, gi3, gi4];
 
@@ -88,8 +97,38 @@ function App() {
   }, []);
 
   const experiences = [
-    { id: 1, role: "Content Writer & App Development", company: "Media Redaksi Berita Tangsel", year: "2024", desc: "Mengembangkan fitur web perusahaan dan menyusun konten berita untuk meningkatkan engagement.", element: "Pyro" },
-    { id: 2, role: "Administrator", company: "Hallo Bogor Media", year: "2018", desc: "Analisis statistik tren berita dan evaluasi performa sistem harian.", element: "Hydro" }
+    { 
+      id: 1, 
+      role: "Content Writer & Web Development", 
+      company: "Media Redaksi Berita Tangsel", 
+      year: "2024", 
+      desc: [
+        "Mengoptimalkan fitur web perusahaan yang meningkatkan stabilitas aplikasi, serta mengelola konten berita untuk meningkatkan user engagement.",
+        "Mendukung fungsionalitas sistem melalui pengembangan kode yang sistematis dan pemeliharaan web secara berkala."
+      ], 
+      element: "Internship" 
+    },
+    { 
+      id: 2, 
+      role: "Administrator", 
+      company: "Hallo Bogor Media | Bogor", 
+      year: "2018", 
+      desc: [
+        "Menganalisis tren data statistik harian untuk memberikan rekomendasi evaluasi teknis yang meningkatkan efisiensi operasional sistem.",
+        "Menganalisis performa harian sistem dan memberikan rekomendasi peningkatan kualitas konten berdasarkan data statistik."
+      ], 
+      element: "Internship" 
+    }
+  ];
+
+  const educationList = [
+    {
+      id: 1,
+      degree: "Sarjana Komputer (S.Kom)",
+      institution: "Universitas Pamulang",
+      year: "2019 - 2023",
+      desc: "Fokus pada studi perancangan sistem, basis data, algoritma pemrograman, serta pengembangan perangkat lunak berbasis web."
+    }
   ];
 
   const programmingSkills = ["PHP", "JavaScript", "HTML", "Python", "Kotlin", "React.js", "Node.js", "MySQL", "CodeIgniter 3"];
@@ -119,25 +158,8 @@ function App() {
   const prevSlide = (e) => { e.stopPropagation(); setCurrentIdx((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length); };
 
   return (
-    <div className={`min-h-screen ${characterThemeBackgrounds[scrollCharacterIndex]} text-white font-sans selection:bg-[#38bdf8] selection:text-black relative overflow-x-hidden transition-colors duration-1000`}>
+    <div className={`min-h-screen w-full ${characterThemeBackgrounds[scrollCharacterIndex]} text-white font-sans selection:bg-[#38bdf8] selection:text-black relative overflow-x-hidden transition-colors duration-1000`}>
       
-      {/* BACKGROUND VIDEO DI BAGIAN TENGAH / KESELURUHAN HALAMAN */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full object-cover opacity-15 mix-blend-screen filter blur-[1px]"
-        >
-          <source src={bgVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-white/5 rounded-full blur-[160px] pointer-events-none z-0"></div>
-      <div className="absolute top-1/2 right-10 w-[700px] h-[700px] bg-white/5 rounded-full blur-[180px] pointer-events-none z-0"></div>
-
       <div className="fixed bottom-6 right-6 z-40 hidden lg:flex flex-col items-end pointer-events-none">
         <div className="relative w-52 h-52 md:w-64 md:h-64 filter drop-shadow-[0_0_30px_rgba(255,255,255,0.3)] pointer-events-auto cursor-pointer group">
           <div className="absolute inset-0 bg-white/10 rounded-full blur-2xl group-hover:bg-white/25 transition-all"></div>
@@ -156,7 +178,7 @@ function App() {
         </div>
       </div>
 
-      <nav className="flex items-center justify-between px-8 py-5 bg-black/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 shadow-lg">
+      <nav className="flex items-center justify-between px-6 md:px-16 py-5 bg-black/40 backdrop-blur-md border-b border-white/10 sticky top-0 z-50 shadow-lg w-full">
         <div className="flex items-center gap-6">
           <span className="text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-300 to-sky-400">
             PORTFOLIO
@@ -164,20 +186,42 @@ function App() {
           <div className="hidden md:flex gap-6 text-xs font-mono text-zinc-300">
             <a href="#home" className="hover:text-white transition-colors cursor-pointer">HOME</a>
             <a href="#experience" className="hover:text-white transition-colors cursor-pointer">EXPERIENCE</a>
+            <a href="#education" className="hover:text-white transition-colors cursor-pointer">EDUCATION</a>
             <a href="#projects" className="hover:text-white transition-colors cursor-pointer">PROJECTS</a>
           </div>
         </div>
         <a 
           href="/Ilham Ngudi Slameto-Resume.pdf" 
           download="Ilham Ngudi Slameto-Resume.pdf" 
-          className="px-5 py-2 rounded-full bg-white text-black font-bold font-mono text-xs tracking-wider hover:bg-zinc-200 transition-all shadow-lg"
+          className="px-5 py-2 rounded-full bg-blue-600 text-white font-bold font-mono text-xs tracking-wider hover:bg-white hover:text-black transition-all shadow-lg"
         >
           DOWNLOAD CV
         </a>
       </nav>
 
-      <section id="home" className="relative px-6 md:px-20 py-16 max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 min-h-[90vh] z-10">
-        <div className="max-w-2xl z-10 flex flex-col items-start relative w-full">
+      <section ref={heroSectionRef} id="home" className="relative px-6 md:px-16 py-16 w-full flex flex-col lg:flex-row items-center justify-between gap-12 min-h-[90vh] z-10 overflow-hidden">
+        
+        <motion.div 
+          style={{ opacity: videoOpacity }}
+          className="absolute inset-0 pointer-events-none overflow-hidden z-0"
+        >
+          <video 
+            ref={videoRef}
+            autoPlay 
+            loop 
+            muted 
+            playsInline 
+            preload="auto"
+            className="w-full h-full object-cover mix-blend-screen filter blur-[0.5px]"
+          >
+            <source src={bgVideo} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-transparent to-[#030712] opacity-80"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#030712] via-transparent to-[#030712] opacity-60"></div>
+        </motion.div>
+
+        <div className="max-w-4xl z-10 flex flex-col items-start relative w-full">
           <div className="absolute -top-24 -left-20 w-[420px] h-[420px] md:w-[500px] md:h-[500px] pointer-events-none z-0 opacity-40 mix-blend-screen filter blur-[0.5px]">
             <AnimatePresence mode="wait">
               <motion.img 
@@ -199,15 +243,15 @@ function App() {
               SCROLL DOWN TO SHIFT CHARACTER & BACKGROUND ({scrollCharacterIndex + 1}/4)
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight uppercase leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight uppercase leading-[1.1]">
               Fullstack <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 via-purple-300 to-pink-400">
                 Engineer & Developer
               </span>
             </h1>
             
-            <p className="mt-6 text-zinc-200 text-base md:text-lg leading-relaxed font-light max-w-xl">
-              Berpengalaman dalam perancangan sistem berbasis web, penulisan konten teknis, dan maintenance hardware maupun software. Siap menghadirkan solusi digital yang efisien dan interaktif.
+            <p className="mt-6 text-zinc-200 text-base md:text-lg leading-relaxed font-light max-w-4xl">
+              "Berpengalaman luas dalam perancangan sistem berbasis web dan penulisan konten teknis, serta memiliki keahlian mendalam dalam pemeliharaan dan pengembangan web secara <em>end-to-end</em>—mencakup arsitektur <em>backend</em> hingga antarmuka <em>frontend</em>. Didukung dengan penguasaan pemeliharaan <em>hardware</em> maupun <em>software</em> secara menyeluruh, siap menghadirkan solusi digital korporat yang efisien, handal, interaktif, dan berorientasi pada performa tinggi."
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -222,30 +266,30 @@ function App() {
         </div>
 
         <div className="w-full lg:w-[480px] relative flex flex-col items-center justify-center gap-6 z-10">
-            <div className="w-full h-[420px] md:h-[480px] relative flex justify-center items-center bg-black/35 backdrop-blur-md rounded-3xl border border-white/15 shadow-2xl overflow-hidden p-4">
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+          <div className="w-full h-[420px] md:h-[480px] relative flex justify-center items-center bg-black/35 backdrop-blur-md rounded-3xl border border-white/15 shadow-2xl overflow-hidden p-4">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
 
-              <img 
-                src={profilFoto} 
-                alt="Ilham Ngudi Slameto" 
-                className="w-full h-full object-cover rounded-2xl z-10 filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]"
-              />
+            <img 
+              src={profilFoto} 
+              alt="Ilham Ngudi Slameto" 
+              className="w-full h-full object-cover object-left rounded-2xl z-10 filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]"
+            />
 
-              <div className="absolute bottom-4 left-4 right-4 bg-black/65 border border-white/15 rounded-xl p-3 backdrop-blur-md flex justify-between items-center text-xs font-mono z-20">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
-                  <span className="text-zinc-300">PROFILE:</span>
-                  <span className="text-white font-bold">Ilham Ngudi Slameto</span>
-                </div>
-                <span className="text-sky-300 font-mono text-[11px] font-bold uppercase bg-white/10 px-2.5 py-1 rounded border border-white/10">
-                  S.kom
-                </span>
+            <div className="absolute bottom-4 left-4 right-4 bg-black/65 border border-white/15 rounded-xl p-3 backdrop-blur-md flex justify-between items-center text-xs font-mono z-20">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
+                <span className="text-zinc-300">PROFILE:</span>
+                <span className="text-white font-bold">Ilham Ngudi Slameto</span>
               </div>
+              <span className="text-sky-300 font-mono text-[11px] font-bold uppercase bg-white/10 px-2.5 py-1 rounded border border-white/10">
+                S.Kom
+              </span>
             </div>
+          </div>
         </div>
       </section>
 
-      <div id="experience" className="max-w-6xl mx-auto px-6 pt-24 pb-24 grid md:grid-cols-2 gap-16 relative z-20">
+      <div id="experience" className="w-full px-6 md:px-16 pt-24 pb-24 grid md:grid-cols-2 gap-12 relative z-20">
         <div className="relative pt-16 overflow-visible">
           <div className="absolute top-0 left-0 right-0 flex justify-center pointer-events-none z-30">
             <div className="relative w-36 h-36 flex justify-center items-center">
@@ -268,14 +312,7 @@ function App() {
             </div>
           </div>
 
-          <section className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md relative z-10 flex flex-col shadow-2xl overflow-hidden">
-            <motion.div 
-              style={{ x: badgeTranslateX }} 
-              className="absolute -right-10 top-8 bg-sky-500/20 border border-sky-400/40 px-6 py-1 rounded-full text-[10px] font-mono text-sky-300 backdrop-blur-sm rotate-12 pointer-events-none shadow-lg z-20"
-            >
-              ✦ ELEMENTAL SYNC ACTIVE
-            </motion.div>
-
+          <section className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md relative z-10 flex flex-col shadow-2xl overflow-hidden h-full">
             <h2 className="text-xs font-mono tracking-[0.25em] uppercase text-sky-300 mb-6">Professional_Experience</h2>
             <div className="space-y-6">
               {experiences.map((exp) => (
@@ -286,7 +323,11 @@ function App() {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-1">{exp.role}</h3>
                   <p className="text-sky-300/90 font-mono text-xs mb-3">@{exp.company}</p>
-                  <p className="text-sm text-zinc-200 leading-relaxed">{exp.desc}</p>
+                  <ul className="list-disc list-inside space-y-2 text-sm text-zinc-200 leading-relaxed">
+                    {exp.desc.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
+                  </ul>
                 </motion.div>
               ))}
             </div>
@@ -315,7 +356,7 @@ function App() {
             </div>
           </div>
 
-          <section className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md relative z-10 flex flex-col shadow-2xl">
+          <section className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md relative z-10 flex flex-col shadow-2xl h-full">
             <h2 className="text-xs font-mono tracking-[0.25em] uppercase text-sky-300 mb-6">Technical_Capabilities</h2>
             <div className="space-y-6">
               <div className="bg-black/40 border border-white/10 p-6 rounded-2xl backdrop-blur-sm">
@@ -345,7 +386,26 @@ function App() {
         </div>
       </div>
 
-      <section id="projects" ref={projectSectionRef} className="max-w-6xl mx-auto px-6 py-12 relative z-20 overflow-hidden">
+      <section id="education" className="w-full px-6 md:px-16 pb-24 relative z-20 scroll-mt-28">
+        <div className="bg-black/40 border border-white/15 p-8 rounded-3xl backdrop-blur-md shadow-2xl">
+          <h2 className="text-xs font-mono tracking-[0.25em] uppercase text-sky-300 mb-6">Educational_Background</h2>
+          <div className="grid md:grid-cols-1 gap-6">
+            {educationList.map((edu) => (
+              <motion.div key={edu.id} whileHover={{ x: 4 }} className="border border-white/10 bg-black/40 p-6 rounded-2xl hover:border-white/30 transition-all backdrop-blur-sm">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="bg-white/10 text-sky-200 px-2.5 py-0.5 rounded text-xs font-mono border border-white/10">{edu.year}</span>
+                  <span className="text-xs font-mono text-sky-300 font-bold">Formal Education</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">{edu.degree}</h3>
+                <p className="text-sky-300/90 font-mono text-xs mb-3">@{edu.institution}</p>
+                <p className="text-sm text-zinc-200 leading-relaxed">{edu.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" ref={projectSectionRef} className="w-full px-6 md:px-16 py-12 relative z-20 overflow-hidden scroll-mt-28">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <h2 className="text-xs font-mono tracking-[0.25em] uppercase text-sky-300">Featured_Projects</h2>
           <div className="flex gap-2 bg-black/50 p-1.5 rounded-xl border border-white/15 backdrop-blur-md">
@@ -355,7 +415,7 @@ function App() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 pt-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
           {filteredProjects.map((proj, idx) => (
             <motion.div 
               key={idx} 
@@ -364,7 +424,7 @@ function App() {
               onClick={() => { setSelectedProject(proj); setCurrentIdx(0); }}
             >
               <div>
-                <div className="h-48 w-full overflow-hidden relative rounded-t-3xl">
+                <div className="h-56 w-full overflow-hidden relative rounded-t-3xl">
                   <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70 z-10"></div>
                   <motion.img 
                     style={{ y: imageParallaxY }}
@@ -396,7 +456,7 @@ function App() {
         </div>
       </section>
 
-      <footer className="max-w-6xl mx-auto px-6 mt-20 border-t border-white/15 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono text-zinc-300 relative z-25">
+      <footer className="w-full px-6 md:px-16 mt-20 border-t border-white/15 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono text-zinc-300 relative z-25">
         <p>© 2026 Ilham Ngudi Slameto. All rights reserved.</p>
         <div className="flex gap-6">
           <a href="https://mail.google.com/mail/?view=cm&fs=1&to=ilhamngudi1@gmail.com" target="_blank" rel="noreferrer" className="text-sky-300 hover:underline">Gmail</a>
