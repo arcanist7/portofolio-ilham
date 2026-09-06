@@ -1,4 +1,4 @@
-# 🚀 Portofolio Pribadi — Ilham Ngudi Slameto
+# 🚀 Portofolio — Ilham Ngudi Slameto
 
 Website portofolio pribadi interaktif yang dibangun dengan **React.js**, **Vite**, dan **Tailwind CSS**. Didesain dengan tema futuristik dan sentuhan animasi elemen untuk menampilkan berbagai proyek *Software Engineering*, pengalaman profesional, serta kapabilitas teknis saya.
 
